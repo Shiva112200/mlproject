@@ -1,171 +1,104 @@
-
-
-# Import necessary libraries
+import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Given data points
-x = np.array([2, 3, 5, 7, 9])
-y = np.array([1, 2, 4, 5, 6])
+st.set_page_config(page_title="Linear Regression Demo", layout="centered")
 
-# Number of data points
-n = len(x)
+st.title("📈 Simple Linear Regression using Least Squares and Gradient Descent")
 
-# Calculate sums needed for least squares method
-sum_x = np.sum(x)
-sum_y = np.sum(y)
-sum_xy = np.sum(x * y)
-sum_x_squared = np.sum(x ** 2)
+# Least Squares Section
+st.header("🔹 Least Squares Method")
 
-# Calculate slope (m) and intercept (c)
-m = (n * sum_xy - sum_x * sum_y) / (n * sum_x_squared - sum_x ** 2)
-c = (sum_y - m * sum_x) / n
+# Data for Least Squares
+x_ls = np.array([2, 3, 5, 7, 9])
+y_ls = np.array([1, 2, 4, 5, 6])
+n_ls = len(x_ls)
 
-# Print the calculated values of m and c
-print(f"Slope (m): {m}")
-print(f"Intercept (c): {c}")
+# Least Squares Calculations
+sum_x = np.sum(x_ls)
+sum_y = np.sum(y_ls)
+sum_xy = np.sum(x_ls * y_ls)
+sum_x_squared = np.sum(x_ls ** 2)
 
-# Plotting the data points
-plt.scatter(x, y, color='blue', label='Data Points')
+m_ls = (n_ls * sum_xy - sum_x * sum_y) / (n_ls * sum_x_squared - sum_x ** 2)
+c_ls = (sum_y - m_ls * sum_x) / n_ls
 
-# Plotting the regression line
-plt.plot(x, m * x + c, color='red', label=f'Regression Line: y = {m:.2f}x + {c:.2f}')
+st.write(f"**Slope (m):** {m_ls:.4f}")
+st.write(f"**Intercept (c):** {c_ls:.4f}")
 
-# Labeling the axes
-plt.xlabel('x')
-plt.ylabel('y')
-plt.title('Simple Linear Regression using Least Squares Method')
+# Plot for Least Squares
+fig1, ax1 = plt.subplots()
+ax1.scatter(x_ls, y_ls, color='blue', label='Data Points')
+ax1.plot(x_ls, m_ls * x_ls + c_ls, color='red', label=f'Regression Line: y = {m_ls:.2f}x + {c_ls:.2f}')
+ax1.set_title("Least Squares Fit")
+ax1.set_xlabel("x")
+ax1.set_ylabel("y")
+ax1.legend()
+st.pyplot(fig1)
 
-# Adding a legend
-plt.legend()
+# Gradient Descent Section
+st.header("🔹 Gradient Descent Method")
 
-# Display the plot
-plt.show()
-print("Slope (m):", 0.7134146341463414)
-
-print("Intercept (c):", -0.10975609756097526)
-
-
-#Compute Parmeters using Gradient Descent
-# Import necessary libraries
-import numpy as np
-import matplotlib.pyplot as plt
-
-# Given data points
-x = np.array([1, 2, 3, 4, 5])
-y = np.array([2, 3, 5, 7, 8])
-
-# Number of data points
-n = len(x)
+# Data for Gradient Descent
+x_gd = np.array([1, 2, 3, 4, 5])
+y_gd = np.array([2, 3, 5, 7, 8])
+n_gd = len(x_gd)
 
 # Hyperparameters
 learning_rate = 0.05
-epochs = 200  # Number of iterations
+epochs = 200
+m, c = 0, 0
 
-# Initialize m (slope) and c (intercept) to zero
-m = 0
-c = 0
-
-# Store history of m and c for plotting
-m_history = [m]
-c_history = [c]
-
-# Gradient Descent Function
 for epoch in range(epochs):
-    y_pred = m * x + c  # Predicted values
-    
-    # Calculate the gradients
-    dm = (-2/n) * np.sum(x * (y - y_pred))
-    dc = (-2/n) * np.sum(y - y_pred)
-    
-    # Update parameters
+    y_pred = m * x_gd + c
+    dm = (-2 / n_gd) * np.sum(x_gd * (y_gd - y_pred))
+    dc = (-2 / n_gd) * np.sum(y_gd - y_pred)
     m -= learning_rate * dm
     c -= learning_rate * dc
-    
-    # Store values for plotting
-    m_history.append(m)
-    c_history.append(c)
-    
-    # Print values every 20 epochs
-    if (epoch + 1) % 20 == 0:
-        print(f"Epoch {epoch + 1}: m = {m:.4f}, c = {c:.4f}")
 
-# Plotting the data points
-plt.scatter(x, y, color='blue', label='Data Points')
+st.write(f"**Final Gradient Descent Parameters:**")
+st.write(f"**Slope (m):** {m:.4f}")
+st.write(f"**Intercept (c):** {c:.4f}")
 
-# Plotting the regression line
-plt.plot(x, m * x + c, color='red', label=f'Regression Line: y = {m:.2f}x + {c:.2f}')
+# Plot for Gradient Descent
+fig2, ax2 = plt.subplots()
+ax2.scatter(x_gd, y_gd, color='green', label='Data Points')
+ax2.plot(x_gd, m * x_gd + c, color='orange', label=f'Regression Line: y = {m:.2f}x + {c:.2f}')
+ax2.set_title("Gradient Descent Fit")
+ax2.set_xlabel("x")
+ax2.set_ylabel("y")
+ax2.legend()
+st.pyplot(fig2)
 
-# Labeling the axes
-plt.xlabel('x')
-plt.ylabel('y')
-plt.title('Simple Linear Regression using Least Squares Method')
+# Error Metrics Section
+st.header("📊 Error Metrics")
 
-# Adding a legend
-plt.legend()
+# Example data
+y_actual = np.array([3, 4, 5, 6])
+y_pred = np.array([2.5, 4.2, 4.8, 6.3])
+num_predictors = 1
 
-# Display the plot
-plt.show()
-print("Epoch 20: m = 1.5555, c = 0.3606")
-print("Epoch 40: m = 1.5684, c = 0.3142")
-print("Epoch 60: m = 1.5775, c = 0.2812")
-print("Epoch 80: m = 1.5840, c = 0.2577")
-print("Epoch 100: m = 1.5886, c = 0.2411")
-print("Epoch 120: m = 1.5919, c = 0.2292")
-print("Epoch 140: m = 1.5943, c = 0.2208")
-print("Epoch 160: m = 1.5959, c = 0.2148")
-print("Epoch 180: m = 1.5971, c = 0.2105")
-print("Epoch 200: m = 1.5979, c = 0.2075")
-
-
-#Error Metrics
-import numpy as np
-
-# Define a function to calculate all metrics
+# Error Metric Calculation
 def calculate_metrics(y_actual, y_pred, num_predictors):
     n = len(y_actual)
-    
-    # Mean of actual values
     y_mean = np.mean(y_actual)
-    
-    # Errors
     residuals = y_actual - y_pred
-    
-    # Metrics
+
     MAE = np.mean(np.abs(residuals))
     SSE = np.sum(residuals**2)
     MSE = np.mean(residuals**2)
     RMSE = np.sqrt(MSE)
     MAPE = np.mean(np.abs(residuals / y_actual)) * 100
-    
-    # R-squared
     SS_total = np.sum((y_actual - y_mean)**2)
     R_square = 1 - (SSE / SS_total)
-    
-    # Adjusted R-squared
     Adjusted_R_square = 1 - ((SSE / (n - num_predictors - 1)) / (SS_total / (n - 1)))
-    
-    # Print all metrics
-    print(f"Mean Absolute Error (MAE): {MAE}")
-    print(f"Sum of Squared Errors (SSE): {SSE}")
-    print(f"Mean Squared Error (MSE): {MSE}")
-    print(f"Root Mean Squared Error (RMSE): {RMSE}")
-    print(f"Mean Absolute Percentage Error (MAPE): {MAPE}%")
-    print(f"R-squared: {R_square}")
-    print(f"Adjusted R-squared: {Adjusted_R_square}")
 
-# Example usage:
-y_actual = np.array([3, 4, 5, 6])
-y_pred = np.array([2.5, 4.2, 4.8, 6.3])
-
-# Assuming 1 predictor (simple linear regression)
-num_predictors = 1
+    st.write(f"**MAE:** {MAE:.4f}")
+    st.write(f"**SSE:** {SSE:.4f}")
+    st.write(f"**MSE:** {MSE:.4f}")
+    st.write(f"**RMSE:** {RMSE:.4f}")
+    st.write(f"**MAPE:** {MAPE:.2f}%")
+    st.write(f"**R²:** {R_square:.4f}")
+    st.write(f"**Adjusted R²:** {Adjusted_R_square:.4f}")
 
 calculate_metrics(y_actual, y_pred, num_predictors)
-print("Mean Absolute Error (MAE): 0.30000000000000004")
-print("Sum of Squared Errors (SSE): 0.4200000000000001")
-print("Mean Squared Error (MSE): 0.10500000000000002")
-print("Root Mean Squared Error (RMSE): 0.32403703492039304")
-print("Mean Absolute Percentage Error (MAPE): 7.666666666666668%")
-print("R-squared: 0.9159999999999999")
-print("Adjusted R-squared: 0.874")
